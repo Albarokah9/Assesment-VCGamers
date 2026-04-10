@@ -8,6 +8,23 @@
 
 ---
 
+## Traceability Matrix (Requirements Mapping)
+
+Matriks berikut memastikan bahwa ke-8 *Requirement* yang disyaratkan dalam *Brief* Assessment telah ter-cover seluruhnya oleh serangkaian Skenario Pengujian (Test Case).
+
+| Req ID | Requirement | Test Case ID | Status Coverage |
+| :--- | :--- | :--- | :--- |
+| **R-1** | User dapat memasukkan kata kunci pada kolom search. | TC-UX-001, TC-F-001 | ✅ Covered |
+| **R-2** | User dapat menjalankan search (termasuk via tombol Enter/Klik). | TC-F-001 | ✅ Covered |
+| **R-3** | Sistem menampilkan halaman hasil pencarian setelah search dijalankan. | TC-F-001, TC-F-002 | ✅ Covered |
+| **R-4** | Keyword yang dicari tetap terlihat setelah hasil pencarian tampil. | TC-F-003 | ✅ Covered |
+| **R-5** | Sistem menampilkan hasil yang relevan dengan keyword. | TC-F-001, TC-F-002 | ✅ Covered |
+| **R-6** | Jika tidak ada hasil, sistem menampilkan empty state yang jelas. | TC-SEC-001 | ✅ Covered |
+| **R-7** | User dapat membuka detail produk dari hasil pencarian. | TC-F-004, TC-F-005 | ✅ Covered |
+| **R-8** | Search tidak boleh error/blank/rusak walaupun input tidak biasa. | TC-E-001 s/d TC-E-004, TC-SEC-001 | ✅ Covered |
+
+---
+
 ## Daftar Test Scenario
 
 | No | Scenario ID | Nama Skenario | Jumlah TC |
@@ -368,7 +385,7 @@ Jika produk tidak muncul (empty state), catat pesan error yang ditampilkan oleh 
 | **Priority** | MEDIUM |
 | **Test Type** | Negative |
 | **Environment** | DEVELOPMENT |
-| **Notes** | ⚠️ **Potential Defect — Needs Clarification dari PM/BE.** Sistem hanya toleran hingga 3 spasi tambahan di tengah kata kunci (total 4 karakter spasi). Mulai dari 4 spasi tambahan (total 5 karakter), pencarian gagal. Perilaku ini **inkonsisten** dengan trailing spaces yang unlimited. Kemungkinan penyebab: normalisasi spasi di backend menggunakan regex/logika yang berbeda untuk masing-masing posisi. Saran: gunakan `trim()` + `replace(/\s+/g, ' ')` secara universal sebelum query diproses. |
+| **Notes** | ⚠️ **Potential Defect — Needs Clarification dari PM/BE.** Sistem hanya toleran hingga 3 spasi tambahan di tengah kata kunci (total 4 karakter spasi). Mulai dari 4 spasi tambahan (total 5 karakter), pencarian gagal. Perilaku ini **inkonsisten** dengan trailing spaces yang unlimited. Kemungkinan penyebab: normalisasi spasi di backend menggunakan regex/logika yang berbeda untuk masing-masing posisi. Saran: gunakan `trim()` + `replace(/\\s+/g, ' ')` secara universal sebelum query diproses. |
 
 ### Preconditions
 User berada di halaman `/search` VCGamers.
@@ -480,6 +497,32 @@ Verifikasi bahwa tidak ada satupun klik hasil pencarian yang menghasilkan halama
 > _(Perlu dieksekusi secara menyeluruh untuk setiap kombinasi kata kunci)_
 
 <br>
+
+---
+
+## Bug / Finding Report
+
+Sesuai permintaan dokumen Assessment, berikut format pelaporan isu/celah bug *Logic* dan Inkonsistensi yang dijumpai selama observasi *Edge Case*.
+
+### Bug 1: Inkonsistensi Toleransi "Trim Spaces" yang Mengakibatkan Kegagalan Pencarian Produk
+
+*   **Title**: Algoritma Pencarian Gagal Membaca Keyword Jika Terdapat 5+ Spasi Awalan (*Leading*) atau 4+ Spasi Tengah (*Between Words*)
+*   **Steps to Reproduce**:
+    1. Buka halaman utama website `https://www.vcgamers.com/`.
+    2. Klik kolom Search pencarian.
+    3. Ketikkan keyword awalan dengan **5 spasi**. Contoh: `[space][space][space][space][space]free fire`
+    4. Tunggu pemrosesan *Instant Search* (atau tekan *Enter*).
+    5. Coba kasus lain: ketikkan keyword *multi-word* dengan **4 spasi** di tengah kata. Contoh: `free[space][space][space][space]fire`.
+    6. Observasi respon sistem terhadap kemunculan produk.
+*   **Expected Result**:
+    Sistem seyogyanya menerapkan utilitas `String.trim()` bawaan terpusat untuk memangkas *unlimited trailing/leading spaces*, maupun `regex multiple whitespace` (*replace(/\\s+/g, ' ')*) agar berapapun jumlah spasi berlebih dari *user typo* dapat direduksi secara halus *(Fail-safe)* sehingga sistem tetap menampilkan hasil "Free Fire".
+*   **Actual Result**:
+    Sistem **gagal mendeteksi** keyword.
+    - Pada Spasi Awalan (*Leading*), toleransi maksimal hanya 4 kali. Pada ketukan spasi ke-5, halaman search mendadak `BLANK` / *Empty state* produk tidak tertera.
+    - Pada Spasi Tengah (*Between words*), toleransi maksimal hanya 3 kali. Pada ketukan spasi ke-4, hasil *list* menjadi lenyap.
+    Sebaliknya, pada Spasi Akhiran (*Trailing Spaces*), sistem dapat mentolerir berapapun jumlah spasinya (tidak ada *bug* di ekor kata).
+*   **Severity / Impact**: 🟡 **Medium / Minor**
+    Kesalahan (*typo* spasi berlebih akibat tombol tersangkut/dll) dari *user behavior* menyebabkan ia berasumsi produk terkait "tidak dijual" di *platform*, karena sistem tidak bisa membaca "free         fire" sama dengan "free fire". Mengurangi angka konversi penjualan (*Lost Sales Potential*).
 
 ---
 
