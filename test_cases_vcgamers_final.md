@@ -326,18 +326,18 @@ Skenario ini menguji bagaimana algoritma pencarian menangani karakter spasi yang
 ### Preconditions
 User berada di halaman `/search` VCGamers.
 Test Data: Kata Kunci (dengan spasi akhir):
-* "free fire   " (3 spasi di belakang)
-* "free fire          " (10 spasi di belakang)
-* "free fire                    " (20 spasi di belakang)
+* `"free fire   "` (3 spasi di belakang)
+* `"free fire          "` (10 spasi di belakang)
+* `"free fire                    "` (20 spasi di belakang)
 
 ### Test Steps
-Ketikkan "free fire   " (kata kunci diikuti 3 karakter spasi di belakang) pada kolom pencarian, catat hasil yang muncul
+Ketikkan `"free fire   "` (kata kunci diikuti 3 karakter spasi di belakang) pada kolom pencarian, catat hasil yang muncul
 
-Hapus kolom pencarian, lalu ketikkan "free fire          " (10 spasi di belakang), catat hasilnya
+Hapus kolom pencarian, lalu ketikkan `"free fire          "` (10 spasi di belakang), catat hasilnya
 
-Hapus kolom pencarian, lalu ketikkan "free fire                    " (20 spasi di belakang), catat hasilnya
+Hapus kolom pencarian, lalu ketikkan `"free fire                    "` (20 spasi di belakang), catat hasilnya
 
-Bandingkan ketiga hasil pencarian tersebut dengan hasil pencarian normal "free fire" tanpa spasi
+Bandingkan ketiga hasil pencarian tersebut dengan hasil pencarian normal `"free fire"` tanpa spasi
 
 Verifikasi bahwa semua variasi menghasilkan produk yang sama — tidak ada batasan jumlah spasi di akhir
 
@@ -364,21 +364,21 @@ Verifikasi bahwa semua variasi menghasilkan produk yang sama — tidak ada batas
 ### Preconditions
 User berada di halaman `/search` VCGamers.
 Test Data: Kata Kunci (dengan leading space):
-* " free fire" (1 spasi)
-* "  free fire" (2 spasi)
-* "   free fire" (3 spasi)
-* "    free fire" (4 spasi)
+* `" free fire"` (1 spasi)
+* `"  free fire"` (2 spasi)
+* `"   free fire"` (3 spasi)
+* `"    free fire"` (4 spasi)
 
 ### Test Steps
-Ketikkan " free fire" (1 spasi di depan) pada kolom pencarian, catat hasil yang muncul
+Ketikkan `" free fire"` (1 spasi di depan) pada kolom pencarian, catat hasil yang muncul
 
-Hapus kolom pencarian, lalu ketikkan "  free fire" (2 spasi di depan), catat hasilnya
+Hapus kolom pencarian, lalu ketikkan `"  free fire"` (2 spasi di depan), catat hasilnya
 
-Hapus kolom pencarian, lalu ketikkan "   free fire" (3 spasi di depan), catat hasilnya
+Hapus kolom pencarian, lalu ketikkan `"   free fire"` (3 spasi di depan), catat hasilnya
 
-Hapus kolom pencarian, lalu ketikkan "    free fire" (4 spasi di depan), catat hasilnya
+Hapus kolom pencarian, lalu ketikkan `"    free fire"` (4 spasi di depan), catat hasilnya
 
-Bandingkan keempat hasil pencarian tersebut dengan hasil pencarian normal "free fire" tanpa spasi
+Bandingkan keempat hasil pencarian tersebut dengan hasil pencarian normal `"free fire"` tanpa spasi
 
 Verifikasi bahwa semua variasi (1–4 spasi) menghasilkan produk yang sama
 
@@ -400,31 +400,31 @@ Verifikasi bahwa semua variasi (1–4 spasi) menghasilkan produk yang sama
 | **Priority** | HIGH |
 | **Test Type** | Negative |
 | **Environment** | DEVELOPMENT |
-| **Notes** | ⚠️ **Potential Defect — Needs Clarification dari PM/BE.** Sistem gagal menampilkan hasil pencarian ketika leading spaces ≥ 5. Perilaku ini **inkonsisten** dengan trailing spaces yang berhasil di-trim tanpa batasan (TC-E-001). Jika design spec tidak mengatur batasan khusus, maka ini merupakan defect pada logika trimming. Referensi: Google Search, Tokopedia, Shopee — semua menghandle unlimited leading spaces. |
+| **Notes** | ⚠️ **Potential Defect — Needs Clarification dari PM/BE.** Intinya, spasi di awal hanya mampu ditangani maksimal 4 spasi. Jika lebih dari itu (≥ 5 spasi), maka data produk tidak ditampilkan dan akan muncul empty state. Perilaku ini inkonsisten dengan penanganan spasi di akhir yang unlimited. Referensi: Google Search, Tokopedia, Shopee. |
 
 ### Preconditions
 User berada di halaman `/search` VCGamers.
 Test Data: Kata Kunci (spasi berlebih — melampaui batas toleransi):
-* "     free fire" (5 spasi di depan — **boundary +1, di luar toleransi**)
-* "      free fire" (6 spasi di depan)
-* "          free fire" (10 spasi di depan)
+* `"     free fire"` (5 spasi di depan — **boundary +1, di luar toleransi**)
+* `"      free fire"` (6 spasi di depan)
+* `"          free fire"` (10 spasi di depan)
 
 ### Test Steps
-Ketikkan "     free fire" (5 spasi di depan) pada kolom pencarian, catat apakah produk muncul atau tidak
+Ketikkan `"     free fire"` (5 spasi di depan) pada kolom pencarian, catat apakah produk muncul atau tidak
 
-Hapus kolom pencarian, lalu ketikkan "      free fire" (6 spasi di depan), catat hasilnya
+Hapus kolom pencarian, lalu ketikkan `"      free fire"` (6 spasi di depan), catat hasilnya
 
-Hapus kolom pencarian, lalu ketikkan "          free fire" (10 spasi di depan), catat hasilnya
+Hapus kolom pencarian, lalu ketikkan `"          free fire"` (10 spasi di depan), catat hasilnya
 
 Verifikasi apakah produk "Free Fire" masih muncul untuk setiap variasi di atas
 
 Jika produk tidak muncul (empty state), catat pesan error yang ditampilkan oleh sistem — ini mengkonfirmasi kelemahan pada algoritma trimming yang hanya toleran hingga 4 spasi
 
 ### Expected Result
-> Idealnya, sistem seharusnya mampu memotong spasi berapapun jumlahnya di awal kata kunci dan tetap mengembalikan hasil pencarian yang akurat — konsisten dengan perilaku trailing spaces. Jika gagal menampilkan hasil pada 5+ spasi, maka ini merupakan **potential defect** pada logika trimming yang hanya toleran sampai **maksimal 4 spasi**.
+> Idealnya, sistem mampu melakukan `trim()` terhadap spasi di awal kata kunci tanpa batasan jumlah, sama seperti saat menangani spasi di akhir (trailing spaces). Produk "Free Fire" seharusnya tetap muncul meskipun ada 5 spasi atau lebih di awal pencarian. Jika lebih dari 4 spasi malah menampilkan Empty State, ini terindikasi sebagai defect logika.
 
 ### Actual Result
-> Sistem **gagal menampilkan hasil pencarian** ketika jumlah leading spaces melebihi 4 karakter. Pada 5 spasi ke atas, sistem menampilkan empty state alih-alih hasil produk "Free Fire". Ini mengkonfirmasi bahwa algoritma trimming untuk leading spaces memiliki **batas toleransi 4 spasi** — input dengan 5+ spasi di awal tidak di-trim dengan benar, menghasilkan query kosong atau tidak valid.
+> Sesuai batasan sistem, **spasi di awal hanya mampu ditangani maksimal 4 spasi**. Jika jumlah spasi di awal mencapai **5 spasi atau lebih**, maka data produk tidak ditampilkan dan memicu sistem untuk memunculkan halaman **Empty State** ("Tidak ada yang cocok dengan Keyword ini"). Ini membuktikan adanya cacat/inkonsistensi logika *trimming*.
 
 <br>
 
@@ -438,34 +438,34 @@ Jika produk tidak muncul (empty state), catat pesan error yang ditampilkan oleh 
 | **Priority** | MEDIUM |
 | **Test Type** | Negative |
 | **Environment** | DEVELOPMENT |
-| **Notes** | ⚠️ **Potential Defect — Needs Clarification dari PM/BE.** Sistem hanya toleran hingga 3 spasi tambahan di tengah kata kunci (total 4 karakter spasi). Mulai dari 4 spasi tambahan (total 5 karakter), pencarian gagal. Perilaku ini **inkonsisten** dengan trailing spaces yang unlimited. Kemungkinan penyebab: normalisasi spasi di backend menggunakan regex/logika yang berbeda untuk masing-masing posisi. Saran: gunakan `trim()` + `replace(/\\s+/g, ' ')` secara universal sebelum query diproses. |
+| **Notes** | ⚠️ **Potential Defect — Needs Clarification dari PM/BE.** Intinya, spasi tambahan di tengah kata hanya mampu ditangani maksimal 3 spasi saja. Jika 4 spasi atau lebih, maka data produk tidak ditampilkan dan akan muncul empty state. Saran perbaikan: gunakan `replace(/\\s+/g, ' ')` secara universal sebelum memproses query pencarian. |
 
 ### Preconditions
 User berada di halaman `/search` VCGamers.
 Test Data: Kata Kunci (spasi di tengah):
-* "free  fire" (2 spasi — dalam batas toleransi)
-* "free   fire" (3 spasi — **batas maksimal toleransi**)
-* "free    fire" (4 spasi — **boundary +1, di luar toleransi**)
-* "free          fire" (10 spasi — jauh melampaui batas)
+* `"free  fire"` (2 spasi — dalam batas toleransi)
+* `"free   fire"` (3 spasi — **batas maksimal toleransi**)
+* `"free    fire"` (4 spasi — **boundary +1, di luar toleransi**)
+* `"free          fire"` (10 spasi — jauh melampaui batas)
 
 ### Test Steps
-Ketikkan "free  fire" (2 spasi di tengah) pada kolom pencarian, catat apakah produk muncul
+Ketikkan `"free  fire"` (2 spasi di tengah) pada kolom pencarian, catat apakah produk muncul
 
-Hapus kolom, lalu ketikkan "free   fire" (3 spasi di tengah), catat hasilnya — ini adalah **batas maksimal toleransi**
+Hapus kolom, lalu ketikkan `"free   fire"` (3 spasi di tengah), catat hasilnya — ini adalah **batas maksimal toleransi**
 
-Hapus kolom, lalu ketikkan "free    fire" (4 spasi di tengah), catat hasilnya — ini adalah **boundary +1** yang diharapkan gagal
+Hapus kolom, lalu ketikkan `"free    fire"` (4 spasi di tengah), catat hasilnya — ini adalah **boundary +1** yang diharapkan gagal
 
-Hapus kolom, lalu ketikkan "free          fire" (10 spasi di tengah), catat hasilnya
+Hapus kolom, lalu ketikkan `"free          fire"` (10 spasi di tengah), catat hasilnya
 
-Bandingkan hasil dari semua variasi dengan pencarian normal "free fire" (1 spasi)
+Bandingkan hasil dari semua variasi dengan pencarian normal `"free fire"` (1 spasi)
 
 Verifikasi bahwa 1–3 spasi tambahan di tengah menghasilkan produk yang sama, dan 4+ spasi di tengah mulai gagal
 
 ### Expected Result
-> Sistem seharusnya tetap mengenali kata kunci meskipun terdapat spasi berlebih di antara kata. Algoritma pencarian yang baik akan menormalisasi multiple spaces menjadi single space sebelum memproses query. Pada kenyataannya, batas toleransi adalah **3 spasi tambahan di tengah** — 4 spasi ke atas menjadi temuan potential defect.
+> Sistem seharusnya menormalisasi spasi berlebih di tengah dua kata (mengurangi multiple spaces menjadi single space) tanpa ada batasan jumlah, sehingga pencarian produk tetap akurat dan relevan.
 
 ### Actual Result
-> Sistem mampu menangani hingga **3 spasi tambahan di tengah** kata kunci (total 4 karakter spasi termasuk spasi normal) dan tetap menampilkan hasil pencarian yang benar. Namun, mulai dari **4 spasi tambahan** (total 5 karakter spasi), sistem gagal mendeteksi produk dan menampilkan empty state. Ini mengkonfirmasi bahwa algoritma normalisasi spasi di tengah kata kunci memiliki **batas toleransi 3 spasi tambahan**.
+> Sesuai batasan sistem, **spasi tambahan di tengah hanya mampu ditangani maksimal 3 spasi**. Jika spasi tambahan di tengah mencapai **4 spasi atau lebih**, maka data produk tidak ditampilkan dan sistem akan memunculkan halaman **Empty State**.
 
 <br>
 
