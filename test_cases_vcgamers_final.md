@@ -591,9 +591,9 @@ Sesuai permintaan dokumen Assessment, berikut format pelaporan isu/celah bug *Lo
 | 6 | Case-insensitive search berfungsi | ✅ Sesuai Harapan | PASS | — |
 | 7 | Trailing spaces di-trim otomatis — **tanpa batasan jumlah** | ✅ Sesuai Harapan | PASS | Menjadi baseline pembanding inkonsistensi |
 | 8 | Leading spaces (1–4) di-trim otomatis | ✅ Sesuai Harapan | PASS | — |
-| 9 | Leading spaces (5+) — gagal di-trim, muncul empty state | ⚠️ Potential Defect | FAIL | **PM/BE:** Klarifikasi apakah *by design*? |
+| 9 | Leading spaces (5+) — gagal di-trim, muncul empty state | ⚠️ Potential Defect | READY | ⚠️ Potential Defect — Needs Clarification dari PM/BE. Sistem gagal menampilkan hasil pencarian ketika leading spaces ≥ 5. Perilaku ini **inkonsisten** dengan trailing spaces yang berhasil di-trim tanpa batasan (TC-E-001). Jika design spec tidak mengatur batasan khusus, maka ini merupakan defect pada logika trimming. Referensi: Google Search, Tokopedia, Shopee — semua menghandle unlimited leading spaces. |
 | 10 | Mid-word spaces (1–3 tambahan) di-normalisasi otomatis | ✅ Sesuai Harapan | PASS | — |
-| 11 | Mid-word spaces (4+ tambahan) — gagal mendeteksi produk | ⚠️ Potential Defect | FAIL | **PM/BE:** Klarifikasi apakah *by design*? |
+| 11 | Mid-word spaces (4+ tambahan) — gagal mendeteksi produk | ⚠️ Potential Defect | READY | ⚠️ Potential Defect — Needs Clarification dari PM/BE. Sistem gagal mendeteksi produk ketika mid-word spaces ≥ 4 tambahan. Perilaku ini **inkonsisten** dengan trailing spaces yang berhasil di-trim tanpa batasan (TC-E-001). Jika design spec tidak mengatur batasan khusus, maka ini merupakan defect pada logika normalisasi spasi. Saran perbaikan: terapkan `replace(/\s+/g, ' ')` secara universal sebelum query diproses. |
 | 12 | Parameter `?from=search` terpasang pada URL navigasi | ✅ Sesuai Harapan | PASS | **PM/Analytics:** Pertahankan di semua rilis |
 | 13 | Tidak ada error 404 saat navigasi dari pencarian | ✅ Sesuai Harapan | PASS | **FE:** Jalankan regression rutin |
 | 14 | Initial state tanpa riwayat — area kosong tanpa rekomendasi trending | 💡 Enhancement | SUGGESTION | **PM/UX:** Tambahkan fallback trending |
