@@ -19,7 +19,7 @@ Matriks berikut memastikan bahwa ke-8 *Requirement* yang disyaratkan dalam *Brie
 | **R-3** | Sistem menampilkan halaman hasil pencarian setelah search dijalankan. | TC-F-001, TC-F-002 | ✅ Covered |
 | **R-4** | Keyword yang dicari tetap terlihat setelah hasil pencarian tampil. | TC-F-003 | ✅ Covered |
 | **R-5** | Sistem menampilkan hasil yang relevan dengan keyword. | TC-F-001, TC-F-002 | ✅ Covered |
-| **R-6** | Jika tidak ada hasil, sistem menampilkan empty state yang jelas. | TC-SEC-001 | ✅ Covered |
+| **R-6** | Jika tidak ada hasil, sistem menampilkan empty state yang jelas. | TC-N-001, TC-SEC-001 | ✅ Covered |
 | **R-7** | User dapat membuka detail produk dari hasil pencarian. | TC-F-004, TC-F-005 | ✅ Covered |
 | **R-8** | Search tidak boleh error/blank/rusak walaupun input tidak biasa. | TC-E-001 s/d TC-E-004, TC-SEC-001 | ✅ Covered |
 
@@ -33,9 +33,10 @@ Matriks berikut memastikan bahwa ke-8 *Requirement* yang disyaratkan dalam *Brie
 | 2 | TS-HAPPY | Happy Path — Pencarian Normal & Akurat | 2 |
 | 3 | TS-SEC | Security — Ketahanan Terhadap Injeksi SQL | 1 |
 | 4 | TS-RECOVERY | Functional Recovery — Pembatalan Pencarian | 1 |
-| 5 | TS-TRIM | String Validation & Trimming — Toleransi Spasi | 4 |
-| 6 | TS-NAV | Navigation & Routing — Integrasi ke Halaman Produk | 2 |
-| | | **Total** | **11** |
+| 5 | TS-NEG | Negative Testing — Pencarian Data Tidak Valid (Empty State) | 1 |
+| 6 | TS-TRIM | String Validation & Trimming — Toleransi Spasi | 4 |
+| 7 | TS-NAV | Navigation & Routing — Integrasi ke Halaman Produk | 2 |
+| | | **Total** | **12** |
 
 ---
 
@@ -251,7 +252,59 @@ Verifikasi bahwa antarmuka kembali ke kondisi pra-pencarian (Initial State), mis
 
 ---
 
-## Scenario 5: String Validation & Trimming — Toleransi Spasi (TS-TRIM)
+## Scenario 5: Negative Testing — Pencarian Data Tidak Valid / Empty State (TS-NEG)
+
+Skenario ini memverifikasi perilaku sistem ketika pengguna mencari produk yang tidak ada dalam database. Tujuannya untuk memastikan bahwa sistem tidak menampilkan error teknis, melainkan memberikan antarmuka Empty State yang informatif dan ramah pengguna — sesuai Requirement R-6.
+
+---
+
+## TC-ID: TC-N-001: Validasi Tampilan Empty State Saat Pencarian Produk Tidak Ditemukan
+
+| 🏷️ Field | ℹ️ Detail |
+| :--- | :--- |
+| **References** | TS-NEG / Requirement R-6 |
+| **Priority** | HIGH |
+| **Test Type** | Negative |
+| **Environment** | DEVELOPMENT |
+| **Notes** | — Tampilan empty state sudah sangat komprehensif: pesan informatif, tombol navigasi kembali, opsi kirim saran, dan rekomendasi kategori alternatif. Memenuhi standar UX terbaik untuk penanganan *dead-end search*. |
+
+### Preconditions
+User berada di halaman utama atau halaman `/search` VCGamers.
+Test Data: Kata Kunci Tidak Valid (produk yang dipastikan tidak ada):
+* "testing data invalid"
+* "xyzabc123produk"
+* "barang tidak ada di dunia"
+
+### Test Steps
+Klik kolom search bar di halaman VCGamers
+
+Ketikkan kata kunci yang dipastikan tidak memiliki hasil di database, misalnya "testing data invalid"
+
+Tekan tombol Enter atau tunggu proses Instant Search selesai
+
+Verifikasi bahwa sistem menampilkan halaman Empty State — bukan halaman error teknis, blank, atau crash
+
+Verifikasi ketersediaan elemen teks utama: **"Tidak ada yang cocok dengan Keyword ini"**
+
+Verifikasi ketersediaan tombol **"Kembali ke Home"** yang berfungsi mengarahkan pengguna kembali ke halaman utama
+
+Verifikasi ketersediaan tombol **"Kirim Saran"** sebagai kanal feedback pengguna
+
+Verifikasi ketersediaan section **"Cari di Kategori ini"** yang menampilkan daftar kategori alternatif (DLC, Top Up via Link, Item dan Skin, Game Gift, Top Up Game, Jasa Joki, Akun Game, Game Coins, Voucher, Pulsa dan PLN, Aplikasi Live, Top Up Via Login)
+
+Klik tombol "Kembali ke Home" dan verifikasi bahwa pengguna berhasil diarahkan kembali ke halaman utama tanpa error
+
+### Expected Result
+> Ketika pengguna mencari produk yang tidak ada dalam database, sistem tidak menampilkan error teknis atau halaman kosong. Sebaliknya, sistem menampilkan halaman Empty State yang informatif dan bersahabat, terdiri dari: (1) Pesan "Tidak ada yang cocok dengan Keyword ini", (2) Tombol "Kembali ke Home" untuk navigasi kembali, (3) Tombol "Kirim Saran" untuk feedback, dan (4) Section "Cari di Kategori ini" berisi chip-chip kategori produk alternatif — sehingga pengguna tidak mengalami *dead-end* dan tetap bisa melanjutkan eksplorasi.
+
+### Actual Result
+> Sistem menampilkan halaman Empty State yang sangat komprehensif. Terdapat ilustrasi karakter maskot dengan tanda tanya, pesan "Tidak ada yang cocok dengan Keyword ini" tercentral dengan jelas, tombol "Kembali ke Home" dan "Kirim Saran" tersedia dan berfungsi, serta section "Cari di Kategori ini" menampilkan 12 chip kategori alternatif (DLC, Top Up via Link, Item dan Skin, Game Gift, Top Up Game, Jasa Joki, Akun Game, Game Coins, Voucher, Pulsa dan PLN, Aplikasi Live, Top Up Via Login). Tidak ada error teknis, crash, atau blank page.
+
+<br>
+
+---
+
+## Scenario 6: String Validation & Trimming — Toleransi Spasi (TS-TRIM)
 
 Skenario ini menguji bagaimana algoritma pencarian menangani karakter spasi yang tidak biasa — baik di awal (leading), di akhir (trailing), maupun di tengah kata kunci. Ini adalah area di mana bug logika sering ditemukan.
 
@@ -418,7 +471,7 @@ Verifikasi bahwa 1–3 spasi tambahan di tengah menghasilkan produk yang sama, d
 
 ---
 
-## Scenario 6: Navigation & Routing — Integrasi ke Halaman Produk (TS-NAV)
+## Scenario 7: Navigation & Routing — Integrasi ke Halaman Produk (TS-NAV)
 
 Skenario ini memverifikasi bahwa klik pada hasil pencarian mengarahkan pengguna ke halaman produk yang benar, dengan URL tracking parameter yang tepat untuk keperluan analitik.
 
